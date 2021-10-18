@@ -78,4 +78,44 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// Mark all messages in a conversation as read for the logged in user
+router.put("/:conversationId/read-status", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const userId = req.user.id;
+    const { conversationId } = req.params;
+
+    const conversation = await Conversation.findOne({
+      where: { id: conversationId }
+    });
+
+    if (!conversation) {
+      return res.sendStatus(404);
+    }
+    if (userId !== conversation.user1Id && userId !== conversation.user2Id) {
+      return res.sendStatus(401);
+    }
+
+    // Find all unread messages in this conversation where senderId != userId, and mark them as read
+    await Message.update({ isRead: true }, {
+      where: {
+        conversationId,
+        senderId: {
+          [Op.ne]: userId
+        },
+        isRead: {
+          [Op.eq]: false
+        }
+      }
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
