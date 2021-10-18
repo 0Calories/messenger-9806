@@ -73,8 +73,10 @@ export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
 
+    // Sort all messages in the convo from oldest to newest, and count number of unread messages
     data.forEach((convo) => {
       convo.messages.sort((messageA, messageB) => new Date(messageA.createdAt) - new Date(messageB.createdAt));
+      convo.unreadMessages = convo.messages.filter(message => !message.isRead).length;
     });
 
     dispatch(gotConversations(data));
