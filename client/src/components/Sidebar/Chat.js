@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversation } = props;
+  const { conversation, user } = props;
   const { otherUser } = conversation;
 
   const handleClick = (conversation) => {
@@ -40,9 +40,19 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
-      {conversation.unreadMessages > 0 && <Chip label={conversation.unreadMessages} size="small" color="primary" />}
+      <Chip
+        label={conversation.messages.filter(message => message.senderId !== user.id && !message.isRead).length}
+        size="small"
+        color="primary"
+      />
     </Box>
   );
+};
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -56,4 +66,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

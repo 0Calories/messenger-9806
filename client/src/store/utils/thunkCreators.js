@@ -125,7 +125,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 export const markConversationRead = (conversation) => async (dispatch) => {
-  if (conversation.messages.length === 0) {
+  if (conversation.messages.length === 0 || conversation.unreadMessages === 0) {
     return;
   }
 
