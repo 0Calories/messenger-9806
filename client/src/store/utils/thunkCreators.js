@@ -103,6 +103,8 @@ const sendMessage = (data, body) => {
 export const postMessage = (body) => async (dispatch) => {
   try {
     const data = await saveMessage(body);
+    // Don't want to mark the user's own sent messages as unread
+    data.message.isRead = true;
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
     } else {
@@ -125,7 +127,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 export const markConversationRead = (conversation) => async (dispatch) => {
-  if (conversation.messages.length === 0 || conversation.unreadMessages === 0) {
+  if (conversation.messages.length === 0) {
     return;
   }
 
