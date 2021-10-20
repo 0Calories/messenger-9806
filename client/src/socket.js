@@ -20,6 +20,7 @@ socket.on("connect", () => {
   });
 
   socket.on("new-message", (data) => {
+    data.message.isRead = false;
     store.dispatch(setNewMessage(data.message, data.sender));
   });
 });
