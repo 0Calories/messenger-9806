@@ -16,10 +16,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     "&:hover": {
       cursor: "grab"
-    },
+    }
+  },
+  badge: {
     fontWeight: "bold",
-    paddingRight: 20,
-    fontSize: 10
+    fontWeight: "bold",
+    fontSize: 10,
+    padding: props => props.unreadMessages > 10 ? "0 10px" : "0 8px",
+    marginRight: 20
   }
 }));
 
@@ -48,6 +52,7 @@ const Chat = (props) => {
         badgeContent={conversation.unreadMessages}
         size="small"
         color="primary"
+        classes={{ badge: classes.badge }}
       />
     </Box>
   );
