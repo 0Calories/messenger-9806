@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
   },
   badge: {
     fontWeight: "bold",
-    fontWeight: "bold",
     fontSize: 10,
     padding: props => props.conversation.unreadMessages >= 10 ? "0 10px" : "0 8px",
   }

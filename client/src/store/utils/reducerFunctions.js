@@ -88,7 +88,7 @@ export const markConvoReadInStore = (state, conversation) => {
   return state.map((convo) => {
     if (convo.id === conversation.id) {
       const convoCopy = { ...convo };
-      convoCopy.messages.forEach((message) => message.isRead = true);
+      convoCopy.unreadMessages = 0;
       return convoCopy;
     } else {
       return convo
