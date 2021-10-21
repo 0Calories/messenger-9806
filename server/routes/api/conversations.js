@@ -96,7 +96,7 @@ router.put("/:conversationId/read-status", async (req, res, next) => {
       return res.sendStatus(404);
     }
     if (userId !== conversation.user1Id && userId !== conversation.user2Id) {
-      return res.sendStatus(401);
+      return res.sendStatus(403);
     }
 
     // Find all unread messages in this conversation where senderId != userId, and mark them as read
