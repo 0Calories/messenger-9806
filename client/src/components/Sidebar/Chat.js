@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Box, Badge } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
@@ -25,18 +25,14 @@ const useStyles = makeStyles((theme) => ({
 
 const Chat = (props) => {
   const classes = useStyles();
-  const { conversation, user } = props;
+  const { conversation } = props;
   const { otherUser } = conversation;
-  const [unreadMessages, setUnreadMessages] = useState(0);
 
   const handleClick = (conversation) => {
     props.setActiveChat(conversation.otherUser.username);
     props.markConversationRead(conversation);
   };
 
-  useEffect(() => {
-    setUnreadMessages(conversation.messages.filter(message => message.senderId !== user.id && !message.isRead).length);
-  }, [conversation, user]);
 
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
@@ -49,18 +45,12 @@ const Chat = (props) => {
       <ChatContent conversation={conversation} />
 
       <Badge
-        badgeContent={unreadMessages}
+        badgeContent={conversation.unreadMessages}
         size="small"
         color="primary"
       />
     </Box>
   );
-};
-
-const mapStateToProps = (state) => {
-  return {
-    user: state.user
-  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -74,4 +64,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default connect(null, mapDispatchToProps)(Chat);
