@@ -16,19 +16,19 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     "&:hover": {
       cursor: "grab"
-    }
+    },
+    paddingRight: 20
   },
   badge: {
     fontWeight: "bold",
     fontWeight: "bold",
     fontSize: 10,
-    padding: props => props.unreadMessages > 10 ? "0 10px" : "0 8px",
-    marginRight: 20
+    padding: props => props.conversation.unreadMessages >= 10 ? "0 10px" : "0 8px",
   }
 }));
 
 const Chat = (props) => {
-  const classes = useStyles();
+  const classes = useStyles(props);
   const { conversation } = props;
   const { otherUser } = conversation;
 
