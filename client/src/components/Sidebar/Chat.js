@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     },
-    fontWeight: 500
+    fontWeight: "bold"
   }
 }));
 
