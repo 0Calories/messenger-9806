@@ -36,7 +36,6 @@ const Chat = (props) => {
     props.markConversationRead(conversation);
   };
 
-
   return (
     <Box onClick={() => handleClick(conversation)} className={classes.root}>
       <BadgeAvatar
