@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Chip } from "@material-ui/core";
+import { Box, Badge } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
@@ -17,7 +17,9 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     },
-    fontWeight: "bold"
+    fontWeight: "bold",
+    paddingRight: 20,
+    fontSize: 10
   }
 }));
 
@@ -46,14 +48,11 @@ const Chat = (props) => {
       />
       <ChatContent conversation={conversation} />
 
-      {unreadMessages > 0 &&
-        <Chip
-          label={unreadMessages}
-          size="small"
-          color="primary"
-        />
-      }
-
+      <Badge
+        badgeContent={unreadMessages}
+        size="small"
+        color="primary"
+      />
     </Box>
   );
 };
