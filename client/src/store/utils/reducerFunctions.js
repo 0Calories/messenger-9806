@@ -99,8 +99,24 @@ export const markConvoReadInStore = (state, conversation) => {
       const convoCopy = { ...convo };
       convoCopy.unreadMessages = 0;
       return convoCopy;
-    } else {
-      return convo
     }
+
+    return convo
   });
-}
+};
+
+export const updateLastSeenMessageInStore = (state, conversationId, targetUserId) => {
+  return state.map((convo) => {
+    if (convo.id === conversationId) {
+      const convoCopy = { ...convo };
+
+      // Mark the most recent message in the conversation as read
+      const lastMessageId = convoCopy.messages[convoCopy.messages.length - 1].id;
+      convoCopy.lastReadMessageId = lastMessageId;
+
+      return convoCopy;
+    }
+
+    return convo;
+  })
+};

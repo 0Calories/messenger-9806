@@ -125,13 +125,18 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 };
 
 export const readConversation = (conversation) => async (dispatch) => {
-  if (conversation.messages.length === 0) {
+  if (conversation.messages.length === 0 || conversation.unreadMessages === 0) {
     return;
   }
 
   try {
     await axios.put(`/api/conversations/${conversation.id}/read-status`);
     dispatch(markConversationRead(conversation));
+
+    socket.emit("message-seen", {
+      conversationId: conversation.id,
+      targetUserId: conversation.otherUser.id
+    });
   } catch (error) {
     console.error(error);
   }

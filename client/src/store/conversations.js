@@ -5,6 +5,7 @@ import {
   removeOfflineUserFromStore,
   addMessageToStore,
   markConvoReadInStore,
+  updateLastSeenMessageInStore
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -17,6 +18,7 @@ const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
 const MARK_CONVERSATION_READ = "MARK_CONVERSATION_READ";
+const UPDATE_LAST_SEEN_MESSAGE = "UPDATE_LAST_SEEN_MESSAGE";
 
 // ACTION CREATORS
 
@@ -80,6 +82,13 @@ export const markConversationRead = (conversation) => {
   };
 }
 
+export const updateLastSeenMessage = (conversationId, targetUserId) => {
+  return {
+    type: UPDATE_LAST_SEEN_MESSAGE,
+    payload: { conversationId, targetUserId }
+  }
+}
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -111,6 +120,13 @@ const reducer = (state = [], action) => {
     }
     case MARK_CONVERSATION_READ: {
       return markConvoReadInStore(state, action.conversation)
+    }
+    case UPDATE_LAST_SEEN_MESSAGE: {
+      return updateLastSeenMessageInStore(
+        state,
+        action.payload.conversationId,
+        action.payload.targetUserId
+      );
     }
     default: {
       return state;
