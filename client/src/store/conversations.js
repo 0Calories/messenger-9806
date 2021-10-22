@@ -16,7 +16,7 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
-const OPEN_CONVERSATION = "OPEN_CONVERSATION";
+const MARK_CONVERSATION_READ = "MARK_CONVERSATION_READ";
 
 // ACTION CREATORS
 
@@ -73,9 +73,9 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
-export const openConversation = (conversation) => {
+export const markConversationRead = (conversation) => {
   return {
-    type: OPEN_CONVERSATION,
+    type: MARK_CONVERSATION_READ,
     conversation
   };
 }
@@ -109,7 +109,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     }
-    case OPEN_CONVERSATION: {
+    case MARK_CONVERSATION_READ: {
       return markConvoReadInStore(state, action.conversation)
     }
     default: {
