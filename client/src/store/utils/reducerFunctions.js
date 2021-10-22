@@ -105,7 +105,7 @@ export const markConvoReadInStore = (state, conversation) => {
   });
 };
 
-export const updateLastSeenMessageInStore = (state, conversationId, targetUserId) => {
+export const updateLastSeenMessageInStore = (state, conversationId) => {
   return state.map((convo) => {
     if (convo.id === conversationId) {
       const convoCopy = { ...convo };

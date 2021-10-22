@@ -28,7 +28,7 @@ socket.on("connect", () => {
     // Ensure that this socket event is intended for the logged in user
     const currentUserId = store.getState().user.id;
     if (currentUserId === data.targetUserId) {
-      store.dispatch(updateLastSeenMessage(data.conversationId, data.targetUserId));
+      store.dispatch(updateLastSeenMessage(data.conversationId));
     }
   });
 });

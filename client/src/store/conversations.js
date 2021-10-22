@@ -82,10 +82,10 @@ export const markConversationRead = (conversation) => {
   };
 }
 
-export const updateLastSeenMessage = (conversationId, targetUserId) => {
+export const updateLastSeenMessage = (conversationId) => {
   return {
     type: UPDATE_LAST_SEEN_MESSAGE,
-    payload: { conversationId, targetUserId }
+    conversationId
   }
 }
 
@@ -122,11 +122,7 @@ const reducer = (state = [], action) => {
       return markConvoReadInStore(state, action.conversation)
     }
     case UPDATE_LAST_SEEN_MESSAGE: {
-      return updateLastSeenMessageInStore(
-        state,
-        action.payload.conversationId,
-        action.payload.targetUserId
-      );
+      return updateLastSeenMessageInStore(state, action.conversationId);
     }
     default: {
       return state;
