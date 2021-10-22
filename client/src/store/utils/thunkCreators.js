@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  markConversationRead,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -73,6 +74,7 @@ export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
 
+    // Sort all messages in the convo from oldest to newest
     data.forEach((convo) => {
       convo.messages.sort((messageA, messageB) => new Date(messageA.createdAt) - new Date(messageB.createdAt));
     });
@@ -117,6 +119,24 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/api/users/${searchTerm}`);
     dispatch(setSearchedUsers(data));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const readConversation = (conversation) => async (dispatch) => {
+  if (conversation.messages.length === 0 || conversation.unreadMessages === 0) {
+    return;
+  }
+
+  try {
+    await axios.put(`/api/conversations/${conversation.id}/read-status`);
+    dispatch(markConversationRead(conversation));
+
+    socket.emit("message-seen", {
+      conversationId: conversation.id,
+      targetUserId: conversation.otherUser.id
+    });
   } catch (error) {
     console.error(error);
   }

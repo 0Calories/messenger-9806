@@ -4,6 +4,8 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  markConvoReadInStore,
+  updateLastSeenMessageInStore
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -15,6 +17,8 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
+const MARK_CONVERSATION_READ = "MARK_CONVERSATION_READ";
+const UPDATE_LAST_SEEN_MESSAGE = "UPDATE_LAST_SEEN_MESSAGE";
 
 // ACTION CREATORS
 
@@ -25,10 +29,14 @@ export const gotConversations = (conversations) => {
   };
 };
 
-export const setNewMessage = (message, sender) => {
+export const setNewMessage = (message, sender, isIncomingMessage = false) => {
   return {
     type: SET_MESSAGE,
-    payload: { message, sender: sender || null },
+    payload: {
+      message,
+      sender: sender || null,
+      isIncomingMessage
+    },
   };
 };
 
@@ -67,32 +75,58 @@ export const addConversation = (recipientId, newMessage) => {
   };
 };
 
+export const markConversationRead = (conversation) => {
+  return {
+    type: MARK_CONVERSATION_READ,
+    conversation
+  };
+}
+
+export const updateLastSeenMessage = (conversationId) => {
+  return {
+    type: UPDATE_LAST_SEEN_MESSAGE,
+    conversationId
+  }
+}
+
 // REDUCER
 
 const reducer = (state = [], action) => {
   switch (action.type) {
-    case GET_CONVERSATIONS:
+    case GET_CONVERSATIONS: {
       return action.conversations;
-    case SET_MESSAGE:
+    }
+    case SET_MESSAGE: {
       return addMessageToStore(state, action.payload);
+    }
     case ADD_ONLINE_USER: {
       return addOnlineUserToStore(state, action.id);
     }
     case REMOVE_OFFLINE_USER: {
       return removeOfflineUserFromStore(state, action.id);
     }
-    case SET_SEARCHED_USERS:
+    case SET_SEARCHED_USERS: {
       return addSearchedUsersToStore(state, action.users);
-    case CLEAR_SEARCHED_USERS:
+    }
+    case CLEAR_SEARCHED_USERS: {
       return state.filter((convo) => convo.id);
-    case ADD_CONVERSATION:
+    }
+    case ADD_CONVERSATION: {
       return addNewConvoToStore(
         state,
         action.payload.recipientId,
         action.payload.newMessage
       );
-    default:
+    }
+    case MARK_CONVERSATION_READ: {
+      return markConvoReadInStore(state, action.conversation)
+    }
+    case UPDATE_LAST_SEEN_MESSAGE: {
+      return updateLastSeenMessageInStore(state, action.conversationId);
+    }
+    default: {
       return state;
+    }
   }
 };
 

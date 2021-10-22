@@ -70,9 +70,59 @@ router.get("/", async (req, res, next) => {
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;
       conversations[i] = convoJSON;
+
+      // Count number of unread messages for the logged in user and add it as a property
+      convoJSON.unreadMessages = convoJSON.messages.filter(message => !message.isRead && message.senderId !== userId).length;
+
+      // Find the most recent message that the other user in the conversation has seen, and mark it 
+      const lastReadMessage = convoJSON.messages.find(message => message.senderId === userId && message.isRead);
+
+      if (lastReadMessage) {
+        convoJSON.lastReadMessageId = lastReadMessage.id;
+      }
     }
 
     res.json(conversations);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Mark all messages in a conversation as read for the logged in user
+router.put("/:conversationId/read-status", async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.sendStatus(401);
+    }
+
+    const userId = req.user.id;
+    const { conversationId } = req.params;
+
+    const conversation = await Conversation.findOne({
+      where: { id: conversationId }
+    });
+
+    if (!conversation) {
+      return res.sendStatus(404);
+    }
+    if (userId !== conversation.user1Id && userId !== conversation.user2Id) {
+      return res.sendStatus(403);
+    }
+
+    // Find all unread messages in this conversation where senderId != userId, and mark them as read
+    await Message.update({ isRead: true }, {
+      where: {
+        conversationId,
+        senderId: {
+          [Op.ne]: userId
+        },
+        isRead: {
+          [Op.eq]: false
+        }
+      }
+    });
+
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }

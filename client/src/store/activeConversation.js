@@ -12,8 +12,9 @@ const reducer = (state = "", action) => {
     case SET_ACTIVE_CHAT: {
       return action.username;
     }
-    default:
+    default: {
       return state;
+    }
   }
 };
 

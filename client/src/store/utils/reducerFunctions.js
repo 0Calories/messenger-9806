@@ -1,5 +1,5 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender } = payload;
+  const { message, sender, isIncomingMessage } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
     const newConvo = {
@@ -7,7 +7,13 @@ export const addMessageToStore = (state, payload) => {
       otherUser: sender,
       messages: [message],
     };
+
     newConvo.latestMessageText = message.text;
+
+    if (isIncomingMessage) {
+      newConvo.unreadMessages = 1;
+    }
+
     return [newConvo, ...state];
   }
 
@@ -16,6 +22,11 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+
+      if (isIncomingMessage) {
+        convoCopy.unreadMessages += 1;
+      }
+
       return convoCopy;
     } else {
       return convo;
@@ -74,9 +85,38 @@ export const addNewConvoToStore = (state, recipientId, message) => {
       convoCopy.id = message.conversationId;
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+      convoCopy.unreadMessages = 0;
       return convoCopy;
     } else {
       return convo;
     }
   });
+};
+
+export const markConvoReadInStore = (state, conversation) => {
+  return state.map((convo) => {
+    if (convo.id === conversation.id) {
+      const convoCopy = { ...convo };
+      convoCopy.unreadMessages = 0;
+      return convoCopy;
+    }
+
+    return convo
+  });
+};
+
+export const updateLastSeenMessageInStore = (state, conversationId) => {
+  return state.map((convo) => {
+    if (convo.id === conversationId) {
+      const convoCopy = { ...convo };
+
+      // Mark the most recent message in the conversation as read
+      const lastMessageId = convoCopy.messages[convoCopy.messages.length - 1].id;
+      convoCopy.lastReadMessageId = lastMessageId;
+
+      return convoCopy;
+    }
+
+    return convo;
+  })
 };
