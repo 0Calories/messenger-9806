@@ -4,8 +4,9 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
-  updateLastSeenMessage
+  updateLastSeenMessage,
 } from "./store/conversations";
+import { readConversation } from "./store/utils/thunkCreators";
 
 const socket = io(window.location.origin);
 
@@ -22,6 +23,14 @@ socket.on("connect", () => {
 
   socket.on("new-message", (data) => {
     store.dispatch(setNewMessage(data.message, data.sender, true));
+
+    // Check if the user is already viewing the conversation for this message, and mark it as read
+    const targetConversation = store.getState().conversations.find(convo => convo.id === data.message.conversationId);
+    const activeConversation = store.getState().activeConversation;
+
+    if (targetConversation.otherUser.username === activeConversation) {
+      store.dispatch(readConversation(targetConversation));
+    }
   });
 
   socket.on("message-seen", (data) => {
