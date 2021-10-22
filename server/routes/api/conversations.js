@@ -75,9 +75,9 @@ router.get("/", async (req, res, next) => {
       convoJSON.unreadMessages = convoJSON.messages.filter(message => !message.isRead && message.senderId !== userId).length;
 
       // Find the most recent message that the other user in the conversation has seen, and mark it 
-      for (let i = convoJSON.messages.length - 1; i >= 0; i--) {
+      for (let i = 0; i < convoJSON.messages.length; i++) {
         const message = convoJSON.messages[i]
-        if (message.senderId !== userId && message.isRead) {
+        if (message.senderId === userId && message.isRead) {
           convoJSON.lastReadMessageId = message.id;
           break;
         }
